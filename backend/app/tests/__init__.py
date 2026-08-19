@@ -1,3 +1,0 @@
-"""
-Backend test package init.
-"""
