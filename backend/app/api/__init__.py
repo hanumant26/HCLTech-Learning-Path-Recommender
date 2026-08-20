@@ -7,6 +7,7 @@ from backend.app.api.skills import router as skills_router
 from backend.app.api.learner import router as learner_router
 from backend.app.api.recommendations import router as recommendations_router
 from backend.app.api.learning_path import router as learning_path_router
+from backend.app.api.assistant import router as assistant_router
 
 __all__ = [
     "careers_router",
@@ -14,4 +15,5 @@ __all__ = [
     "learner_router",
     "recommendations_router",
     "learning_path_router",
+    "assistant_router",
 ]

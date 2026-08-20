@@ -24,6 +24,7 @@ from backend.app.api import (
     learner_router,
     recommendations_router,
     learning_path_router,
+    assistant_router,
 )
 
 app = FastAPI(
@@ -101,6 +102,7 @@ app.include_router(skills_router,          prefix="/api", tags=["Skills"])
 app.include_router(learner_router,         prefix="/api", tags=["Learner"])
 app.include_router(recommendations_router, prefix="/api", tags=["Recommendations"])
 app.include_router(learning_path_router,   prefix="/api", tags=["Learning Path"])
+app.include_router(assistant_router,       prefix="/api", tags=["Assistant"])
 
 # ---------------------------------------------------------------------------
 # Health check
