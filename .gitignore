@@ -9,4 +9,5 @@ frontend/dist/
 dist/
 .DS_Store
 .tools/
-*.tsbuildinfo
+*.tsbuildinfo
+frontend/.vite/
