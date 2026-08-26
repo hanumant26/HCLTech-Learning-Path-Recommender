@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens as CSS custom properties (R G B triplets, no commas) so
+   Tailwind's rgb(var(--x) / <alpha-value>) trick supports opacity modifiers
+   like bg-ink-700/10. Swapping .dark on <html> flips every token at once —
+   no component file needs a dark: variant. */
+:root {
+  --color-ink: 20 22 43; /* #14162B */
+  --color-ink-800: 29 32 64; /* #1D2040 */
+  --color-ink-700: 40 44 85; /* #282C55 */
+  --color-ink-600: 58 63 115; /* #3A3F73 */
+
+  --color-paper: 247 245 240; /* #F7F5F0 */
+  --color-paper-dim: 239 235 225; /* #EFEBE1 */
+  --color-surface: 255 255 255; /* white cards on light paper */
+
+  --color-growth: 62 124 89; /* #3E7C59 */
+  --color-growth-light: 220 235 225; /* #DCEBE1 */
+  --color-growth-dark: 44 89 64; /* #2C5940 */
+
+  --color-amber: 199 123 60; /* #C77B3C */
+  --color-amber-light: 243 225 205; /* #F3E1CD */
+
+  --color-clay: 177 76 76; /* #B14C4C */
+  --color-clay-light: 244 220 220; /* #F4DCDC */
+}
+
+.dark {
+  --color-ink: 237 237 242; /* body text — near-white */
+  --color-ink-800: 248 248 250; /* headings — brightest */
+  --color-ink-700: 166 169 196; /* secondary text */
+  --color-ink-600: 107 111 148; /* borders / tertiary */
+
+  --color-paper: 15 16 30; /* page background — deep indigo-black */
+  --color-paper-dim: 22 24 46;
+  --color-surface: 26 28 52; /* card background, one step up from paper */
+
+  --color-growth: 111 191 152; /* brighter green for contrast on dark bg */
+  --color-growth-light: 31 58 44; /* dark tinted badge background */
+  --color-growth-dark: 143 214 176; /* text-on-badge tone */
+
+  --color-amber: 226 163 105;
+  --color-amber-light: 58 42 24;
+
+  --color-clay: 224 133 133;
+  --color-clay-light: 58 31 31;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+  body {
+    @apply bg-paper text-ink transition-colors duration-200;
+    line-height: 1.55;
+  }
+  ::selection {
+    @apply bg-growth-light text-ink;
+  }
+  *:focus-visible {
+    outline: 2px solid rgb(var(--color-growth));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Typography scale — use these instead of ad hoc text-3xl/font-semibold
+     combinations so heading sizes stay consistent across every page.
+     Page title: 36px | Section heading: 24px | Card title: 19px
+     Body: 16px | Supporting: 15px | Meta: 13px */
+  .text-page-title {
+    @apply font-display text-[2.25rem] font-semibold leading-[1.15] tracking-tight text-ink;
+  }
+  .text-page-subtitle {
+    @apply mt-3 max-w-2xl text-[1.0625rem] leading-relaxed text-ink-700;
+  }
+  .text-section-heading {
+    @apply font-display text-2xl font-semibold leading-snug text-ink;
+  }
+  .text-card-title {
+    @apply font-display text-[1.1875rem] font-medium leading-snug text-ink;
+  }
+  .text-brand {
+    @apply font-display text-2xl font-semibold tracking-tight text-ink;
+  }
+  .text-body {
+    @apply text-base leading-relaxed text-ink-700;
+  }
+  .text-supporting {
+    @apply text-[0.9375rem] leading-relaxed text-ink-700;
+  }
+  .text-meta {
+    @apply font-mono text-[13px] tracking-wide text-ink-700/70;
+  }
+
+  /* Page-level scaffolding — top padding + bottom breathing room, applied
+     on top of .container-page for every screen so vertical rhythm stays
+     consistent without hand-tuning py-* per page. */
+  .page-shell {
+    @apply py-12 lg:py-16;
+  }
+  .page-header {
+    @apply mb-10 lg:mb-12;
+  }
+  .section-spacing {
+    @apply mt-10 lg:mt-12;
+  }
+
+  /* Buttons — three variants covering every button in the app. Sized a
+     step larger than the old px-6 py-2.5 text-sm default so they don't
+     feel like an afterthought next to the larger type scale. */
+  .btn-primary {
+    @apply rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition hover:bg-ink-700 disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply rounded-full border border-ink-700/20 px-7 py-3 text-[15px] font-medium text-ink transition hover:bg-ink-700/10 disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply rounded-full px-5 py-2.5 text-[15px] font-medium text-ink-700 transition hover:bg-ink-700/10 disabled:opacity-50;
+  }
+
+  /* Form fields — 48–52px tall (py-3.5 + text-base), consistent across
+     every form in the app instead of the old px-3 py-2 text-sm inputs. */
+  .input-field {
+    @apply w-full rounded-xl2 border border-ink-700/20 bg-paper px-4 py-3.5 text-base text-ink outline-none transition placeholder:text-ink-700/50 focus:border-growth;
+  }
+  .input-field-disabled {
+    @apply w-full rounded-xl2 border border-ink-700/10 bg-ink-700/5 px-4 py-3.5 text-base text-ink-700;
+  }
+  .form-label {
+    @apply mb-2 block text-[15px] font-medium text-ink;
+  }
+}
+
+@layer utilities {
+  /* Main dashboard container — scales with the viewport instead of
+     stopping at a fixed max-width, so large monitors aren't left with
+     huge dead margins. Caps at 1600px so lines don't get unreadably long
+     on ultrawide displays. */
+  .container-page {
+    @apply mx-auto w-full px-6 sm:px-8 lg:px-12 xl:px-16;
+    max-width: min(92vw, 1600px);
+  }
+  /* Mid-width container for stat/summary dashboards (Progress,
+     Achievements) — wider than a pure form, narrower than the full
+     dashboard container. */
+  .container-medium {
+    @apply mx-auto w-full px-6 sm:px-8;
+    max-width: min(90vw, 1040px);
+  }
+  /* Reading-width container for feeds/timelines/detail pages. */
+  .container-narrow {
+    @apply mx-auto w-full px-6 sm:px-8;
+    max-width: min(88vw, 760px);
+  }
+  /* Form-width container for compact single-column forms. */
+  .container-form {
+    @apply mx-auto w-full px-6 sm:px-8;
+    max-width: min(88vw, 640px);
+  }
+}
