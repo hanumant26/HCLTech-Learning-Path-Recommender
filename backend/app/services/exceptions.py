@@ -21,3 +21,28 @@ class InvalidProfileError(RecommendationEngineError):
 class NoCandidateResourcesError(RecommendationEngineError):
     """Raised when no suitable candidate learning resources can be retrieved."""
     pass
+
+
+# ---------------------------------------------------------------------------
+# Progress / Feedback / Adaptation module exceptions (additive — Phase 6)
+# ---------------------------------------------------------------------------
+
+class ProgressFeedbackError(Exception):
+    """Base exception for the Progress/Feedback/Adaptation module."""
+    pass
+
+class PathItemNotFoundError(ProgressFeedbackError):
+    """Raised when a referenced path_item_id does not exist."""
+    pass
+
+class ProgressNotFoundError(ProgressFeedbackError):
+    """Raised when a progress record does not exist yet for a path item."""
+    pass
+
+class InvalidFeedbackTypeError(ProgressFeedbackError):
+    """Raised when feedback rating_type is not one of the supported categories."""
+    pass
+
+class LearnerProfileNotFoundError(ProgressFeedbackError):
+    """Raised when no learner profile exists for a given user_id."""
+    pass

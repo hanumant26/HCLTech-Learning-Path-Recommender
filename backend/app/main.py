@@ -5,6 +5,13 @@ Phase 4 additions:
   - CORSMiddleware (allow all origins in development)
   - Five /api/* routers (careers, skills, learner, recommendations, learning-path)
   - Global exception handlers mapping service exceptions to HTTP JSON responses
+
+Phase 5 additions:
+  - Assistant router (/api/assistant/*) for the LLM conversational assistant
+
+Phase 6 additions (Progress/Feedback/Adaptation module):
+  - Progress, Feedback, and Path Management routers
+  - Additional exception handlers for the new module
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +24,10 @@ from backend.app.services.exceptions import (
     UnknownCareerError,
     NoCandidateResourcesError,
     RecommendationEngineError,
+    PathItemNotFoundError,
+    ProgressNotFoundError,
+    InvalidFeedbackTypeError,
+    LearnerProfileNotFoundError,
 )
 from backend.app.api import (
     careers_router,
@@ -25,6 +36,9 @@ from backend.app.api import (
     recommendations_router,
     learning_path_router,
     assistant_router,
+    progress_router,
+    feedback_router,
+    path_management_router,
 )
 
 app = FastAPI(
@@ -32,9 +46,10 @@ app = FastAPI(
     version=settings.VERSION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     description=(
-        "AI-Powered Personalized Learning Path Recommender — Phase 4 API. "
-        "Exposes the recommendation engine, skill gap analysis, and learning path "
-        "generation through a clean REST interface for the React frontend."
+        "AI-Powered Personalized Learning Path Recommender. "
+        "Exposes the recommendation engine, skill gap analysis, learning path "
+        "generation, LLM conversational assistant, and progress/feedback tracking "
+        "through a clean REST interface for the React frontend."
     ),
 )
 
@@ -93,6 +108,40 @@ async def recommendation_engine_handler(request, exc: RecommendationEngineError)
         content={"detail": str(exc), "error_type": "recommendation_engine_error"},
     )
 
+
+# --- Progress/Feedback/Adaptation module exception handlers (additive) -----
+
+@app.exception_handler(PathItemNotFoundError)
+async def path_item_not_found_handler(request, exc: PathItemNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": str(exc), "error_type": "path_item_not_found"},
+    )
+
+
+@app.exception_handler(ProgressNotFoundError)
+async def progress_not_found_handler(request, exc: ProgressNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": str(exc), "error_type": "progress_not_found"},
+    )
+
+
+@app.exception_handler(InvalidFeedbackTypeError)
+async def invalid_feedback_type_handler(request, exc: InvalidFeedbackTypeError):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": str(exc), "error_type": "invalid_feedback_type"},
+    )
+
+
+@app.exception_handler(LearnerProfileNotFoundError)
+async def learner_profile_not_found_handler(request, exc: LearnerProfileNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": str(exc), "error_type": "learner_profile_not_found"},
+    )
+
 # ---------------------------------------------------------------------------
 # Routers — all mounted under /api prefix
 # ---------------------------------------------------------------------------
@@ -103,6 +152,9 @@ app.include_router(learner_router,         prefix="/api", tags=["Learner"])
 app.include_router(recommendations_router, prefix="/api", tags=["Recommendations"])
 app.include_router(learning_path_router,   prefix="/api", tags=["Learning Path"])
 app.include_router(assistant_router,       prefix="/api", tags=["Assistant"])
+app.include_router(progress_router,        prefix="/api", tags=["Progress"])
+app.include_router(feedback_router,        prefix="/api", tags=["Feedback"])
+app.include_router(path_management_router, prefix="/api", tags=["Path Management"])
 
 # ---------------------------------------------------------------------------
 # Health check
