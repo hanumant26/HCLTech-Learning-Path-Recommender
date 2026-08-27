@@ -221,6 +221,9 @@ export async function getProfile(): Promise<LearnerProfile> {
 
 export async function saveProfile(profile: LearnerProfile): Promise<LearnerProfile> {
   // Validate with backend FastAPI /api/learner/profile
+  // Note (Phase 4): The backend endpoint currently only acts as a validation gate.
+  // Profile persistence is handled locally via localStorage. Database persistence 
+  // will be implemented in Phase 5 once full user authentication is introduced.
   try {
     const body = buildBackendProfileRequest(profile);
     const res = await fetch(`${API_BASE}/learner/profile`, {
@@ -530,7 +533,9 @@ export async function getCourseCatalog(): Promise<Course[]> {
 }
 
 // --- Assessments --------------------------------------------------------
-// Interactive in-browser assessment runner backed by knowledge base quizzes
+// Note (Phase 4): Interactive in-browser assessment runner backed by knowledge base quizzes.
+// These features (Assessments, Account, Activity, Notifications, Achievements, Streaks) 
+// are intentionally mocked for this demo phase. Backend APIs will be introduced in Phase 5.
 
 export async function getAssessment(id: string): Promise<Assessment> {
   const found = mockAssessments[id] || mockAssessments["r5"];
