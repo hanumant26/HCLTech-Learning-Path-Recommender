@@ -116,7 +116,7 @@ function formatReason(reasonCodes?: string[], targetSkills?: any[], targetCareer
     return reasons.join(". ") + ".";
   }
   if (targetSkills && targetSkills.length > 0) {
-    const names = targetSkills.map((s) => (typeof s === "string" ? s : s.name || s.slug || String(s)));
+    const names = targetSkills.map((s) => (typeof s === "string" ? s : s.skill_name || s.name || s.skill_slug || s.slug || String(s)));
     return `Covers critical skills: ${names.join(", ")}.`;
   }
   return `Recommended based on your target career ${targetCareer || "goal"}.`;
@@ -264,10 +264,10 @@ export async function getRecommendations(): Promise<Recommendation[]> {
     if (data && Array.isArray(data.recommendations)) {
       const recs: Recommendation[] = data.recommendations.map((item: any) => {
         const skillsCovered = Array.isArray(item.target_skills)
-          ? item.target_skills.map((s: any) => (typeof s === "string" ? s : s.name || s.slug || String(s)))
+          ? item.target_skills.map((s: any) => (typeof s === "string" ? s : s.skill_name || s.name || s.skill_slug || s.slug || String(s)))
           : [];
         const prereqs = Array.isArray(item.prerequisites)
-          ? item.prerequisites.map((p: any) => (typeof p === "string" ? p : p.name || p.slug || String(p)))
+          ? item.prerequisites.map((p: any) => (typeof p === "string" ? p : p.skill_name || p.name || p.skill_slug || p.slug || String(p)))
           : [];
 
         const diffStr = capitalize(item.difficulty_level || "beginner");
@@ -321,7 +321,7 @@ export async function getRoadmap(): Promise<RoadmapNode[]> {
         const difficulty = (diffStr === "Intermediate" || diffStr === "Advanced" ? diffStr : "Beginner") as "Beginner" | "Intermediate" | "Advanced";
         const resType = (item.item_type as ResourceType) || "course";
         const missing = Array.isArray(item.missing_prerequisites)
-          ? item.missing_prerequisites.map((p: any) => (typeof p === "string" ? p : p.name || p.slug || String(p)))
+          ? item.missing_prerequisites.map((p: any) => (typeof p === "string" ? p : p.skill_name || p.name || p.skill_slug || p.slug || String(p)))
           : [];
 
         let status: "completed" | "ready" | "locked" = "locked";
