@@ -152,7 +152,24 @@ Phase 4 exposes the deterministic recommendation engine and profile management v
 
 ---
 
-## 5. Phase 5: LLM Conversational Assistant
+## 5. Phase 6: Progress & Feedback Tracking
+
+Phase 6 introduces tracking mechanisms and path adaptation based on learner interactions.
+
+### Implemented Endpoints
+
+1. **`GET /api/progress`**
+   - Retrieves the overall learning path progress percentage and time spent.
+2. **`POST /api/progress`**
+   - Updates completion progress for a specific resource node within a learning path.
+3. **`POST /api/feedback`**
+   - Submits qualitative learner ratings (`too_easy`, `appropriate`, `too_difficult`, `not_relevant`) for a learning resource.
+4. **`GET /api/learning-path/adaptation`**
+   - Analyzes aggregated progress and feedback to provide dynamic recommendations (e.g., skip ahead, reinforce fundamentals, review prerequisites).
+
+---
+
+## 6. Phase 5: LLM Conversational Assistant
 
 Phase 5 introduces a conversational AI assistant that provides grounded, personalized guidance and explains recommendations, locks, and roadmaps without hallucinations.
 
@@ -175,7 +192,7 @@ Phase 5 introduces a conversational AI assistant that provides grounded, persona
 
 ### Phase 5 Evaluation & Verification
 
-- **Automated Tests**: 102/102 passed across database, engine, API routers, and assistant service test suites.
+- **Automated Tests**: 118/118 passed across database, engine, API routers, and assistant service test suites (0 failures, 3 deprecation warnings).
 - **Manual Tests**: 5/5 passed across all supported conversational question scenarios.
 - **Fallback Engine Verified**: Automatically falls back to a deterministic rule-based conversational engine when `GEMINI_API_KEY` is not present or unreachable.
 - **Grounded Responses Verified**: Responses strictly reference verified profile data, DAG prerequisites, and recommendation scores with zero hallucination.
@@ -183,7 +200,7 @@ Phase 5 introduces a conversational AI assistant that provides grounded, persona
 
 ---
 
-## 6. Project Progress & Implementation Status
+## 7. Project Progress & Implementation Status
 
 | Phase / Component | Description | Status |
 |---|---|---|
@@ -192,14 +209,22 @@ Phase 5 introduces a conversational AI assistant that provides grounded, persona
 | **Phase 3: Recommendation Engine** | Skill gap analysis, NetworkX DAG traversal, multi-factor scoring | Completed |
 | **Phase 4: FastAPI REST API Layer** | 5 core endpoints for careers, skills, profile, recommendations, path | Completed |
 | **Phase 5: LLM Conversational Assistant** | Grounded Q&A assistant, 5 intent handlers, fallback engine | Completed |
-| **Phase 6: Progress & Feedback Loop** | Course completion tracking, ratings, and adaptive path repair | In Progress / Pending |
-| **Phase 7: Frontend Web Application** | Interactive React / Tailwind dashboard and conversational UI | In Progress / Pending |
-| **Phase 8: End-to-End Integration Testing** | Frontend-to-backend end-to-end integration test flows | Pending |
-| **Phase 9: Deployment & Final Documentation** | Production containerization, deployment configs, and demo docs | Pending |
+| **Phase 6: Progress & Feedback Loop** | Course completion tracking, ratings, and adaptive path repair | Completed |
+| **Phase 7: Frontend Web Application** | Interactive React / Tailwind dashboard and conversational UI | Completed |
+| **Phase 8: End-to-End Integration Testing** | Frontend-to-backend end-to-end integration test flows | Completed |
+| **Phase 9: Deployment & Final Documentation** | Production frontend build successful, deployment configs, and demo docs | Completed |
+
+### Intentionally Mocked Features (Phase 4/5 Demo)
+The following features currently use frontend mock/client-side behavior because corresponding backend APIs are not part of the current implementation phase. They are deferred to future phases:
+- **Authentication / Login / Signup:** Uses client-side mock session management.
+- **Assessments:** Interactive quizzes driven by static mock data.
+- **Activity Log & Notifications:** UI driven by client-side mock events.
+- **Achievements / Streaks:** Progress is tracked locally in the browser.
+- **Account-management:** Actions like changing passwords use client-side mocks.
 
 ---
 
-## 7. How to Run the Backend Locally
+## 8. How to Run the Backend Locally
 
 ### Prerequisites
 - Python 3.11+ installed
@@ -236,3 +261,28 @@ uvicorn backend.app.main:app --reload
 - Interactive Swagger API docs: `http://127.0.0.1:8000/docs`
 - Health check endpoint: `http://127.0.0.1:8000/health`
 - Assistant status endpoint: `http://127.0.0.1:8000/api/assistant/status`
+
+---
+
+## 9. How to Run the Frontend Locally
+
+### Prerequisites
+- Node.js (v18+)
+
+### Step 1: Install Dependencies
+```powershell
+cd frontend
+npm install
+```
+
+### Step 2: Start Development Server
+```powershell
+npm run dev
+```
+- Access the frontend dashboard at `http://localhost:5173`
+
+### Step 3: Build for Production
+```powershell
+npm run build
+```
+- A successful build generates optimized static assets in `frontend/dist`.
